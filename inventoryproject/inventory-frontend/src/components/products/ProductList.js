@@ -1,0 +1,87 @@
+import React, { useState, useEffect } from "react";
+import api from "../../services/api";
+import ProductForm from "./ProductForm";
+
+const ProductList = () => {
+  const [products, setProducts] = useState([]);
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await api.get("products/");
+      setProducts(response.data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const handleAddProduct = () => {
+    setEditingProduct(null);
+    setShowForm(true);
+  };
+
+  const handleEditProduct = (product) => {
+    setEditingProduct(product);
+    setShowForm(true);
+  };
+
+  const handleDeleteProduct = async (id) => {
+    try {
+      await api.delete(`products/delete/${id}/`);
+      fetchProducts();
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
+  };
+
+  const handleFormSave = () => {
+    fetchProducts();
+    setShowForm(false);
+  };
+
+  return (
+    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-6">Products</h1>
+      <button
+        className="bg-green-500 text-white p-2 rounded mb-4"
+        onClick={handleAddProduct}
+      >
+        Add Product
+      </button>
+
+      {showForm && (
+        <ProductForm product={editingProduct} onSave={handleFormSave} />
+      )}
+
+      <div className="grid grid-cols-3 gap-4">
+        {products.map((product) => (
+          <div key={product.id} className="border p-4 rounded-lg shadow-md">
+            <h3 className="text-xl font-bold mb-2">{product.name}</h3>
+            <p>Price: ${product.price}</p>
+            <p>Stock: {product.stock_level}</p>
+            <p>{product.description}</p>
+            <button
+              className="bg-yellow-500 text-white p-2 rounded mt-2 mr-2"
+              onClick={() => handleEditProduct(product)}
+            >
+              Edit
+            </button>
+            <button
+              className="bg-red-500 text-white p-2 rounded mt-2"
+              onClick={() => handleDeleteProduct(product.id)}
+            >
+              Delete
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default ProductList;
