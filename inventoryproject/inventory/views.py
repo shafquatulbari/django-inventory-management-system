@@ -89,8 +89,8 @@ class ProductDeleteView(APIView):
 class CategoryListCreateView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    #can be accessed by admin
-    permission_classes = [IsAdminUser]  # Admin-only access
+    #can be accessed by everyone
+    permission_classes = [permissions.IsAuthenticated]
     #add category with name and description
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
