@@ -10,6 +10,7 @@ from .views import (
     ProductUpdateView,
     ProductDeleteView,
     CategoryListCreateView,
+    UserInfoView
 )
 
 urlpatterns = [
@@ -17,6 +18,7 @@ urlpatterns = [
     path('register/', CustomUserRegistrationView.as_view(), name='register'),
     path('login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('user-info/', UserInfoView.as_view(), name='user-info'),
 
     # Product Endpoints
     path('products/', ProductListView.as_view(), name='product-list'),
@@ -27,3 +29,4 @@ urlpatterns = [
     # Category Endpoints
     path('categories/', CategoryListCreateView.as_view(), name='category-list-create'),
 ]
+

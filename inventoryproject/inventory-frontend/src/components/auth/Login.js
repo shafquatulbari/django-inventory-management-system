@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../../services/api";
 import { AuthContext } from "../../context/AuthContext";
 
@@ -20,14 +20,15 @@ const Login = () => {
       localStorage.setItem("access_token", response.data.access);
       localStorage.setItem("refresh_token", response.data.refresh);
       login({ username });
-      navigate("/products");
+      navigate("/homepage");
     } catch (err) {
       setError("Invalid credentials");
     }
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex flex-col justify-center items-center h-screen">
+      <h1 className="text-4xl font-bold mb-6">Inventory Management System</h1>
       <form
         className="w-1/3 bg-white p-8 rounded-lg shadow-md"
         onSubmit={handleSubmit}
@@ -54,6 +55,12 @@ const Login = () => {
         >
           Login
         </button>
+        <p className="mt-4 text-sm">
+          Don't have an account?{" "}
+          <Link to="/register" className="text-blue-500">
+            Register
+          </Link>
+        </p>
       </form>
     </div>
   );

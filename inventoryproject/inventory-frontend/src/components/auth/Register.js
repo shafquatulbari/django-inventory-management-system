@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../../services/api";
 
 const Register = () => {
@@ -20,7 +20,7 @@ const Register = () => {
         is_admin: isAdmin,
       });
       if (response.status === 201) {
-        navigate("/login");
+        navigate("/");
       }
     } catch (err) {
       setError("Registration failed. Check the details and try again.");
@@ -28,7 +28,8 @@ const Register = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex flex-col justify-center items-center h-screen">
+      <h1 className="text-4xl font-bold mb-6">Inventory Management System</h1>
       <form
         className="w-1/3 bg-white p-8 rounded-lg shadow-md"
         onSubmit={handleSubmit}
@@ -70,6 +71,12 @@ const Register = () => {
         >
           Register
         </button>
+        <p className="mt-4 text-sm">
+          Already registered?{" "}
+          <Link to="/" className="text-blue-500">
+            Login
+          </Link>
+        </p>
       </form>
     </div>
   );
