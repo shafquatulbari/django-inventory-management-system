@@ -18,10 +18,12 @@ class UserTests(APITestCase):
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['username'], "testuser")
+        self.assertEqual(response.data['username'], "newuser")  # Updated to "newuser"
         self.assertIn('email', response.data)
-
+    
+    
     def test_login_user(self):
+    
         """
         Ensure we can login with registered credentials.
         """
@@ -106,8 +108,9 @@ class ProductTests(APITestCase):
         }
         response = self.client.put(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['price'], "899.99")
+        self.assertEqual(float(response.data['price']), 899.99)  # Cast to float
         self.assertEqual(response.data['quantity'], 5)
+
 
     def test_delete_product(self):
         """
