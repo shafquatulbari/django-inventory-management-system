@@ -4,6 +4,7 @@ import api from "../../services/api";
 import ProductForm from "../products/ProductForm";
 import { AuthContext } from "../../context/AuthContext";
 import Header from "../header/header";
+import BackButton from "../common/BackButton"; // Import the BackButton
 
 const CategoryProducts = () => {
   const { categoryId } = useParams(); // Get the category ID from the URL
@@ -45,12 +46,11 @@ const CategoryProducts = () => {
     <>
       <Header />
       <div className="p-6">
+        <BackButton /> {/* Add the BackButton component */}
         <h1 className="text-3xl font-bold mb-6">Products in {categoryName}</h1>
-
         {showForm && (
           <ProductForm product={editingProduct} onSave={handleFormSave} />
         )}
-
         <div className="grid grid-cols-3 gap-4">
           {products.map((product) => (
             <div key={product.id} className="border p-4 rounded-lg shadow-md">

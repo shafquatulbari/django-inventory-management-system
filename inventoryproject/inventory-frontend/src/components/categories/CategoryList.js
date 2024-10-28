@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import api from "../../services/api";
 import { AuthContext } from "../../context/AuthContext";
+import BackButton from "../common/BackButton";
 
 const CategoryList = () => {
   const [categories, setCategories] = useState([]);
@@ -69,6 +70,7 @@ const CategoryList = () => {
 
   return (
     <div className="p-6">
+      <BackButton />
       <h1 className="text-3xl font-bold mb-6">Categories</h1>
 
       {/* Admin-specific form */}
