@@ -71,6 +71,14 @@ class ProductUpdateView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class ProductsByCategoryView(APIView):
+    permission_classes = [permissions.IsAuthenticated] # Accessible by all logged-in users
+
+    def get(self, request, category_id):
+        products = Product.objects.filter(category_id=category_id)
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)
 
 # Product Delete View
 class ProductDeleteView(APIView):

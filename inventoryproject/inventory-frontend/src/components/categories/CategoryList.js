@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import { Link } from "react-router-dom";
 import api from "../../services/api";
 import { AuthContext } from "../../context/AuthContext";
 
@@ -111,7 +112,11 @@ const CategoryList = () => {
       <div>
         {categories.map((category) => (
           <div key={category.id} className="border p-4 mb-2 rounded">
-            <h3 className="text-xl">{category.name}</h3>
+            <Link to={`/categories/${category.id}/products`}>
+              <h3 className="text-xl text-blue-500 hover:underline cursor-pointer">
+                {category.name}
+              </h3>
+            </Link>
             <p>{category.description}</p>
             {user && user.is_admin && (
               <button

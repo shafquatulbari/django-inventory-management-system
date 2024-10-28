@@ -71,6 +71,7 @@ const ProductList = () => {
               <h3 className="text-xl font-bold mb-2">{product.name}</h3>
               <p>Price: ${product.price}</p>
               <p>Stock: {product.stock_level}</p>
+              <p>Category: {product.category.name}</p>
               <p>{product.description}</p>
               {user && user.is_admin && (
                 <>
