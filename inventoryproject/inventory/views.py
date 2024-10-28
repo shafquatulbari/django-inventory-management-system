@@ -42,7 +42,13 @@ class ProductAddView(APIView):
                     {"error": "Quantity must be a positive number."},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
+
+            # Update existing product details
             existing_product.stock_level += quantity_to_add
+            existing_product.quantity += quantity_to_add
+            existing_product.price = data.get('price', existing_product.price)
+            existing_product.description = data.get('description', existing_product.description)
+            
             existing_product.save()
             serializer = ProductSerializer(existing_product)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -53,6 +59,7 @@ class ProductAddView(APIView):
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # Product Update View
 class ProductUpdateView(APIView):
@@ -71,6 +78,14 @@ class ProductUpdateView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class ProductsByCategoryView(APIView):
+    permission_classes = [permissions.IsAuthenticated] # Accessible by all logged-in users
+
+    def get(self, request, category_id):
+        products = Product.objects.filter(category_id=category_id)
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)
 
 # Product Delete View
 class ProductDeleteView(APIView):
@@ -89,8 +104,8 @@ class ProductDeleteView(APIView):
 class CategoryListCreateView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    #can be accessed by admin
-    permission_classes = [IsAdminUser]  # Admin-only access
+    #can be accessed by everyone
+    permission_classes = [permissions.IsAuthenticated]
     #add category with name and description
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)

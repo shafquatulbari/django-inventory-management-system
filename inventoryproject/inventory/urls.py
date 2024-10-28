@@ -9,6 +9,7 @@ from .views import (
     ProductAddView,
     ProductUpdateView,
     ProductDeleteView,
+    ProductsByCategoryView,
     CategoryListCreateView,
     UserInfoView
 )
@@ -25,6 +26,7 @@ urlpatterns = [
     path('products/add/', ProductAddView.as_view(), name='product-add'),
     path('products/update/<int:id>/', ProductUpdateView.as_view(), name='product-update'),
     path('products/delete/<int:id>/', ProductDeleteView.as_view(), name='product-delete'),
+    path('categories/<int:category_id>/products/', ProductsByCategoryView.as_view(), name='products-by-category'),
 
     # Category Endpoints
     path('categories/', CategoryListCreateView.as_view(), name='category-list-create'),

@@ -7,6 +7,7 @@ import ProductList from "./components/products/ProductList";
 import CategoryList from "./components/categories/CategoryList";
 import HomePage from "./pages/HomePage";
 import NotFound from "./pages/NotFound";
+import CategoryProducts from "./components/categories/CategoryProducts";
 
 function App() {
   return (
@@ -19,6 +20,10 @@ function App() {
             <Route path="/homepage" element={<HomePage />} />
             <Route path="/products" element={<ProductList />} />
             <Route path="/categories" element={<CategoryList />} />
+            <Route
+              path="/categories/:categoryId/products"
+              element={<CategoryProducts />}
+            />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

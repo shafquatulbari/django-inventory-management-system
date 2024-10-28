@@ -3,6 +3,7 @@ import api from "../../services/api";
 import ProductForm from "./ProductForm";
 import { AuthContext } from "../../context/AuthContext";
 import Header from "../header/header";
+import BackButton from "../common/BackButton";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -51,6 +52,7 @@ const ProductList = () => {
     <>
       <Header />
       <div className="p-6">
+        <BackButton />
         <h1 className="text-3xl font-bold mb-6">Products</h1>
         {user && user.is_admin && (
           <button
@@ -71,6 +73,7 @@ const ProductList = () => {
               <h3 className="text-xl font-bold mb-2">{product.name}</h3>
               <p>Price: ${product.price}</p>
               <p>Stock: {product.stock_level}</p>
+              <p>Category: {product.category}</p>
               <p>{product.description}</p>
               {user && user.is_admin && (
                 <>

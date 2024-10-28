@@ -9,9 +9,6 @@ const ProductForm = ({ product = null, onSave }) => {
   const [description, setDescription] = useState(
     product ? product.description : ""
   );
-  const [stockLevel, setStockLevel] = useState(
-    product ? product.stock_level : ""
-  );
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
@@ -30,7 +27,6 @@ const ProductForm = ({ product = null, onSave }) => {
       price,
       quantity,
       description,
-      stock_level: stockLevel,
     };
 
     try {
@@ -87,13 +83,6 @@ const ProductForm = ({ product = null, onSave }) => {
         placeholder="Description"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
-        className="w-full mb-4 p-2 border rounded"
-      />
-      <input
-        type="number"
-        placeholder="Stock Level"
-        value={stockLevel}
-        onChange={(e) => setStockLevel(e.target.value)}
         className="w-full mb-4 p-2 border rounded"
       />
       <button
