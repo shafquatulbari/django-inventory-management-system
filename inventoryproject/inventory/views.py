@@ -42,7 +42,13 @@ class ProductAddView(APIView):
                     {"error": "Quantity must be a positive number."},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
+
+            # Update existing product details
             existing_product.stock_level += quantity_to_add
+            existing_product.quantity += quantity_to_add
+            existing_product.price = data.get('price', existing_product.price)
+            existing_product.description = data.get('description', existing_product.description)
+            
             existing_product.save()
             serializer = ProductSerializer(existing_product)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -53,6 +59,7 @@ class ProductAddView(APIView):
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # Product Update View
 class ProductUpdateView(APIView):
