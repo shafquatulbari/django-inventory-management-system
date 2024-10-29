@@ -1,6 +1,6 @@
 # django-inventory-management-system
-
-## Setup & Guide
+## Stack - Django & React.js
+### Setup & Guide
 
 Steps (my steps):
 
@@ -25,7 +25,8 @@ Your Steps (For backend) (make sure you have python, venv and django installed o
 
 Your Steps (For frontend) (React app)
 
-- 'cd inventory-frontend' to get in the frontend directory
+- Turn on a different terminal as backend already running on one
+- 'cd inventoryproject' and then 'cd inventory-frontend' to get in the frontend directory
 - 'npm install' to install all dependencies
 - 'npm start' to start frontend which runs on localhost:3000
 
@@ -34,4 +35,3 @@ Authentication
 - I already have username: 'shafquat' and password: password123 for a regular user
 - I already have username: 'testuser' and password: password123 for admin
 - I did not use django superuser to declare admin as I wanted the freedom to have more than a single admin and can choose if I am admin or not while I register
-
