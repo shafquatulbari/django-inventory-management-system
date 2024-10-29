@@ -23,7 +23,18 @@ const Register = () => {
         navigate("/");
       }
     } catch (err) {
-      setError("Registration failed. Check the details and try again.");
+      // Check if there is a response and if it contains error details
+      if (err.response && err.response.data) {
+        // Capture the error message from the server response
+        setError(
+          err.response.data.username ||
+            err.response.data.email ||
+            err.response.data.password ||
+            "Registration failed. Check the details and try again."
+        );
+      } else {
+        setError("An unexpected error occurred. Please try again.");
+      }
     }
   };
 

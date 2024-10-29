@@ -7,10 +7,14 @@ from .models import Category, Product, CustomUser
 from .serializers import CategorySerializer, ProductSerializer, CustomUserSerializer
 from .permissions import IsAdminUser
 
-# Registration View (No changes required)
+# Registration View
 class CustomUserRegistrationView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
+
+    def create(self, request, *args, **kwargs):
+        print("Request data:", request.data)  # Debugging print statement
+        return super().create(request, *args, **kwargs)
 
 class UserInfoView(APIView):
     permission_classes = [permissions.IsAuthenticated]  # Accessible by all logged-in users
@@ -26,11 +30,14 @@ class ProductListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]  # Accessible by all logged-in users
 
 # Product Add View
+# Product Add View with stock_level adjustment
 class ProductAddView(APIView):
     permission_classes = [IsAdminUser]  # Admin-only access
 
     def post(self, request):
         data = request.data
+        print("Received data for product creation:", data)  # Debugging print statement
+
         # Check if the product already exists
         existing_product = Product.objects.filter(name=data.get('name')).first()
 
@@ -53,12 +60,17 @@ class ProductAddView(APIView):
             serializer = ProductSerializer(existing_product)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
+            # Set stock_level to quantity if not provided for new product
+            data['stock_level'] = data.get('quantity', 0)
+
             # Create a new product if it doesn't exist
             serializer = ProductSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                print("Validation errors:", serializer.errors)  # Debugging print statement for errors
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # Product Update View

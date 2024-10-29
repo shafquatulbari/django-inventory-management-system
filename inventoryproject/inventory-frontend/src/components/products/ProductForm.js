@@ -5,13 +5,14 @@ const ProductForm = ({ product = null, onSave }) => {
   const [name, setName] = useState(product ? product.name : "");
   const [category, setCategory] = useState(product ? product.category : "");
   const [price, setPrice] = useState(product ? product.price : "");
+  const [quantity, setQuantity] = useState(product ? product.quantity : 0); // Add quantity state for new product
   const [quantityChange, setQuantityChange] = useState(0);
-  const [quantityOperation, setQuantityOperation] = useState("Add"); // New state for operation
+  const [quantityOperation, setQuantityOperation] = useState("Add");
   const [description, setDescription] = useState(
     product ? product.description : ""
   );
   const [categories, setCategories] = useState([]);
-  const [error, setError] = useState(""); // New state to store error message
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -23,10 +24,13 @@ const ProductForm = ({ product = null, onSave }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Reset error message before submission
+    setError("");
 
-    const adjustedQuantity =
-      quantityOperation === "Add" ? quantityChange : -quantityChange; // Calculate based on selected operation
+    const adjustedQuantity = product
+      ? quantityOperation === "Add"
+        ? quantityChange
+        : -quantityChange
+      : quantity;
 
     const data = {
       name,
@@ -37,26 +41,25 @@ const ProductForm = ({ product = null, onSave }) => {
     };
 
     try {
+      let response;
       if (product) {
-        // Update the product with adjusted quantity
-        const response = await api.put(`products/update/${product.id}/`, {
+        response = await api.put(`products/update/${product.id}/`, {
           ...data,
-          quantityChange: adjustedQuantity, // Send adjusted quantity to backend
+          quantityChange: adjustedQuantity,
         });
-
-        // Check if the backend returned an error
-        if (response.data.error) {
-          setError(response.data.error); // Display error on the screen
-        } else {
-          onSave();
-        }
       } else {
-        // Add new product
-        await api.post("products/add/", data);
+        response = await api.post("products/add/", data);
+      }
+
+      if (response.data.error) {
+        console.log("Error response:", response.data.error); // Log error response
+        setError(response.data.error);
+      } else {
         onSave();
       }
     } catch (error) {
-      setError("Quantity cannot be less than 1!"); // Display a generic error message for unexpected issues
+      console.error("An error occurred while saving the product:", error); // Log catch error
+      setError("An error occurred while saving the product.");
     }
   };
 
@@ -96,7 +99,18 @@ const ProductForm = ({ product = null, onSave }) => {
         className="w-full mb-4 p-2 border rounded"
       />
 
-      {/* Quantity Adjustment */}
+      {/* Quantity Input for New Product */}
+      {!product && (
+        <input
+          type="number"
+          placeholder="Initial Quantity"
+          value={quantity}
+          onChange={(e) => setQuantity(parseInt(e.target.value) || 0)}
+          className="w-full mb-4 p-2 border rounded"
+        />
+      )}
+
+      {/* Quantity Adjustment for Existing Product */}
       {product && (
         <div className="flex items-center mb-4">
           <select

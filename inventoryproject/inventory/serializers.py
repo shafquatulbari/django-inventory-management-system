@@ -7,12 +7,18 @@ class CustomUserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'password', 'is_admin')
         extra_kwargs = {'password': {'write_only': True}}
 
+    def validate_username(self, value):
+        """Check that the username is unique."""
+        if CustomUser.objects.filter(username=value).exists():
+            raise serializers.ValidationError("This username is already taken. Please choose another.")
+        return value
+
     def create(self, validated_data):
         user = CustomUser.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
             password=validated_data['password'],
-            is_admin=validated_data.get('is_admin', False)  # Correct way to handle optional fields
+            is_admin=validated_data.get('is_admin', False)
         )
         return user
     
