@@ -21,7 +21,12 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = '__all__'
 
+from rest_framework import serializers
+from .models import Product
+
 class ProductSerializer(serializers.ModelSerializer):
+    category_name = serializers.ReadOnlyField(source='category.name')  # Add category name as a custom field
+
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = ('id', 'name', 'category', 'category_name', 'price', 'quantity', 'description', 'stock_level')
