@@ -118,12 +118,23 @@ class ProductDeleteView(APIView):
 class CategoryListCreateView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    #can be accessed by everyone
     permission_classes = [permissions.IsAuthenticated]
-    #add category with name and description
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-    #modify category with name and description
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+
+class CategoryDetailView(APIView):
+    permission_classes = [IsAdminUser]  # Only admin can delete
+
+    def delete(self, request, pk):
+        category = get_object_or_404(Category, pk=pk)
+        # Update products linked to this category
+        Product.objects.filter(category=category).update(category=None)  # Set category to None
+        category.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def put(self, request, pk):
+        category = get_object_or_404(Category, pk=pk)
+        serializer = CategorySerializer(category, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     

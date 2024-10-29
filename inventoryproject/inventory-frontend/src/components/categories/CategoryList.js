@@ -38,6 +38,15 @@ const CategoryList = () => {
     setShowForm(true);
   };
 
+  const handleDeleteCategory = async (categoryId) => {
+    try {
+      await api.delete(`categories/${categoryId}/`);
+      setCategories(categories.filter((cat) => cat.id !== categoryId));
+    } catch (error) {
+      setError("Failed to delete category");
+    }
+  };
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -121,12 +130,20 @@ const CategoryList = () => {
             </Link>
             <p>{category.description}</p>
             {user && user.is_admin && (
-              <button
-                className="bg-yellow-500 text-white p-2 rounded mt-2"
-                onClick={() => handleEditCategory(category)}
-              >
-                Edit
-              </button>
+              <>
+                <button
+                  className="bg-yellow-500 text-white p-2 rounded mt-2 mr-2"
+                  onClick={() => handleEditCategory(category)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="bg-red-500 text-white p-2 rounded mt-2"
+                  onClick={() => handleDeleteCategory(category.id)}
+                >
+                  Delete
+                </button>
+              </>
             )}
           </div>
         ))}

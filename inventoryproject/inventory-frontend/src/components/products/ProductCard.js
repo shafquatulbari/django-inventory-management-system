@@ -6,6 +6,7 @@ const ProductCard = ({ product }) => {
       <h3 className="text-xl font-bold mb-2">{product.name}</h3>
       <p>Price: ${product.price}</p>
       <p>Stock: {product.stock_level}</p>
+      <p>Category: {product.category_name}</p>
       <p>{product.description}</p>
     </div>
   );
