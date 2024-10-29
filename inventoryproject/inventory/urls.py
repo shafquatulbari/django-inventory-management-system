@@ -11,6 +11,7 @@ from .views import (
     ProductDeleteView,
     ProductsByCategoryView,
     CategoryListCreateView,
+    CategoryDetailView,
     UserInfoView
 )
 
@@ -30,5 +31,6 @@ urlpatterns = [
 
     # Category Endpoints
     path('categories/', CategoryListCreateView.as_view(), name='category-list-create'),
+    path('categories/<int:pk>/', CategoryDetailView.as_view(), name='category-detail'),  # Detail view for delete
 ]
 
