@@ -4,7 +4,6 @@ from rest_framework.test import APITestCase
 from .models import CustomUser, Product, Category
 
 class UserTests(APITestCase):
-
     def test_register_user(self):
         """
         Ensure we can register a new user.
@@ -18,18 +17,15 @@ class UserTests(APITestCase):
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['username'], "newuser")  # Updated to "newuser"
+        self.assertEqual(response.data['username'], "newuser")
         self.assertIn('email', response.data)
     
-    
     def test_login_user(self):
-    
         """
-        Ensure we can login with registered credentials.
+        Ensure we can log in with registered credentials.
         """
         # Register a user first
         self.test_register_user()
-
         # Now test login
         url = reverse('token_obtain_pair')
         data = {
@@ -41,8 +37,8 @@ class UserTests(APITestCase):
         self.assertIn('access', response.data)
         self.assertIn('refresh', response.data)
 
-class ProductTests(APITestCase):
 
+class ProductTests(APITestCase):
     def setUp(self):
         # Create an admin user and get authentication token
         self.admin_user = CustomUser.objects.create_user(
@@ -104,13 +100,12 @@ class ProductTests(APITestCase):
         url = reverse('product-update', kwargs={'id': product.id})
         data = {
             "price": 899.99,
-            "quantity": 5
+            "quantityChange": 5
         }
         response = self.client.put(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(float(response.data['price']), 899.99)  # Cast to float
-        self.assertEqual(response.data['quantity'], 5)
-
+        self.assertEqual(float(response.data['price']), 899.99)
+        self.assertEqual(response.data['quantity'], product.quantity + 5)  # Ensure quantity adjusted
 
     def test_delete_product(self):
         """
@@ -127,7 +122,6 @@ class ProductTests(APITestCase):
 
 
 class CategoryTests(APITestCase):
-
     def setUp(self):
         # Create an admin user for authorization
         self.admin_user = CustomUser.objects.create_user(
@@ -157,3 +151,54 @@ class CategoryTests(APITestCase):
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['name'], "Books")
+
+    def test_view_categories(self):
+        """
+        Ensure we can view categories.
+        """
+        # First, create a category
+        self.test_create_category()
+
+        url = reverse('category-list-create')
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertGreaterEqual(len(response.data), 1)
+
+    def test_update_category(self):
+        """
+        Ensure we can update a category as an admin.
+        """
+        # Create a category to update
+        self.test_create_category()
+        category = Category.objects.first()
+
+        url = reverse('category-detail', kwargs={'pk': category.id})
+        data = {
+            "name": "Updated Books",
+            "description": "Updated description"
+        }
+        response = self.client.put(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['name'], "Updated Books")
+
+    def test_delete_category(self):
+        """
+        Ensure we can delete a category and unassign products from it.
+        """
+        # Create a category and a product assigned to this category
+        self.test_create_category()
+        category = Category.objects.first()
+        product = Product.objects.create(
+            name="Test Product",
+            category=category,
+            price=10.00,
+            quantity=5,
+            description="A test product",
+            stock_level=5
+        )
+
+        url = reverse('category-detail', kwargs={'pk': category.id})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        product.refresh_from_db()
+        self.assertIsNone(product.category)
